@@ -23,10 +23,11 @@ jobs:
       uses: php-actions/composer@v6
       with:
         php_version: ${{ matrix.php-versions }}
+        args: --ignore-platform-reqs
 
     - name: PHPUnit tests
       uses: php-actions/phpunit@v4
       with:
-        php_extensions: "socket pcov"
+        php_extensions: "sockets pcov"
         version: "9.6"
         php_version: ${{ matrix.php-versions }}
