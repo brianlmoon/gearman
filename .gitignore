@@ -1,0 +1,9 @@
+# Test files
+tests/tests-config.php
+tests/report*
+tests/run-tests.log
+
+# Dependencies
+vendor
+composer.lock
+.phpunit.result.cache
