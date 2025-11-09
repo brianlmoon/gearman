@@ -1,8 +1,10 @@
-# Moonspot\Gearman
+# Net Gearman
 
 ## About
 
-Moonspot\Gearman is a package for interfacing with Gearman. Gearman is a system to farm out work to other machines, dispatching function calls to machines that are better suited to do work, to do work in parallel, to load balance lots of function calls, or to call functions between languages.
+Net_Gearman is a package for interfacing with Gearman. Gearman is a system to farm out work to other machines,
+dispatching function calls to machines that are better suited to do work, to do work in parallel, to load balance lots
+of function calls, or to call functions between languages.
 
 ## Installation
 
@@ -14,37 +16,73 @@ $ composer require moonspot/gearman
 
 ### Client
 
-```
-$client = new \Moonspot\Gearman\Client("localhost");
-$set = new \Moonspot\Gearman\Set();
-$task = new \Moonspot\Gearman\Task("Reverse_String", "foobar");
+```php
+<?php
+
+require __DIR__ . '/vendor/autoload.php';
+
+use Moonspot\Gearman\Client;
+use Moonspot\Gearman\Set;
+use Moonspot\Gearman\Task;
+
+$client = new Client('localhost');
+$set = new Set();
+$task = new Task('Reverse_String', 'foobar');
 $task->attachCallback(
-    function($func, $handle, $result){
-        print_r($result)
+    function ($func, $handle, $result) {
+        print_r($result);
     }
 );
 $set->addTask($task);
-$client->runSet($set, $timeout);
+$client->runSet($set);
+```
+
+### Job
+
+```php
+<?php
+
+namespace App\Gearman;
+
+use Moonspot\Gearman\Job\Common;
+
+class ReverseString extends Common
+{
+    public function run($workload)
+    {
+        return strrev($workload);
+    }
+}
 ```
 
 ### Worker
 
 For easiest use, use GearmanManager for running workers. See: https://github.com/brianlmoon/GearmanManager
 
-```
-$worker = new \Moonspot\Gearman\Worker('localhost');
+```php
+<?php
+
+require __DIR__ . '/vendor/autoload.php';
+
+use Moonspot\Gearman\Worker;
+
+$worker = new Worker('localhost');
 $worker->addAbility('Reverse_String');
 $worker->beginWork();
 ```
 
-### Job
+## Functional Tests
 
+To run the functional tests, docker is required. Run a gearmand in docker with a command like:
+
+```shell
+docker run -d -p 4730:4730 --rm \
+    --name gearmand \
+    artefactual/gearmand:latest
 ```
-class Reverse_String extends \Moonspot\Gearman\Job\Common {
 
-    public function run($workload) {
-        $result = strrev($workload);
-        return $result;
-    }
-}
+Once that is running, run the tests with the functional group flag.
+
+```shell
+./vendor/bin/phpunit --group=functional
 ```

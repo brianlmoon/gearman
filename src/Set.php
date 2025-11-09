@@ -2,10 +2,15 @@
 
 namespace Moonspot\Gearman;
 
+use ArrayIterator;
+use Countable;
+use IteratorAggregate;
+use Traversable;
+
 /**
- * Interface for Danga's Gearman job scheduling system.
+ * Interface for Danga's Gearman job scheduling system
  *
- * PHP version 8.1+
+ * PHP version 5.1.0+
  *
  * LICENSE: This source file is subject to the New BSD license that is
  * available through the world-wide-web at the following URI:
@@ -14,23 +19,26 @@ namespace Moonspot\Gearman;
  * please send a note to license@php.net so we can mail you a copy immediately.
  *
  * @category  Net
- *
+ * @package   Moonspot\Gearman
  * @author    Joe Stump <joe@joestump.net>
  * @author    Brian Moon <brianm@dealnews.com>
  * @copyright 2007-2008 Digg.com, Inc.
  * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
- *
  * @version   CVS: $Id$
- *
- * @see      https://github.com/brianlmoon/net_gearman
+ * @link      https://github.com/brianlmoon/gearman
  */
 
 /**
- * A class for creating sets of tasks.
+ * A class for creating sets of tasks
  *
  * <code>
  * <?php
- * require_once 'Net/Gearman/Client.php';
+ *
+ * require __DIR__ . '/../vendor/autoload.php';
+ *
+ * use Moonspot\Gearman\Client;
+ * use Moonspot\Gearman\Set;
+ * use Moonspot\Gearman\Task;
  *
  * // This is the callback function for our tasks
  * function echoResult($result) {
@@ -43,14 +51,14 @@ namespace Moonspot\Gearman;
  *     'Multiply' => array('3', '4')
  * );
  *
- * $set = new \Moonspot\Gearman\Set();
+ * $set = new Set();
  * foreach ($jobs as $job => $args) {
- *     $task = new \Moonspot\Gearman\Task($job, $args);
+ *     $task = new Task($job, $args);
  *     $task->attachCallback('echoResult');
  *     $set->addTask($task);
  * }
  *
- * $client = new \Moonspot\Gearman\Client(array(
+ * $client = new Client(array(
  *     '127.0.0.1:7003', '127.0.0.1:7004'
  * ));
  *
@@ -60,79 +68,91 @@ namespace Moonspot\Gearman;
  * </code>
  *
  * @category  Net
- *
+ * @package   Moonspot\Gearman
  * @author    Joe Stump <joe@joestump.net>
  * @author    Brian Moon <brianm@dealnews.com>
  * @copyright 2007-2008 Digg.com, Inc.
  * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
- *
- * @see      https://github.com/brianlmoon/net_gearman
- * @see       Moonspot\Gearman\Job_Common, Moonspot\Gearman\Worker
+ * @link      https://github.com/brianlmoon/gearman
+ * @see       Job\Common, Worker
  */
-class Set implements \IteratorAggregate, \Countable {
+class Set implements IteratorAggregate, Countable
+{
     /**
-     * Tasks count.
+     * Tasks count
+     *
+     * @var integer $tasksCount
      */
     public int $tasksCount = 0;
 
     /**
-     * Tasks to run.
+     * Tasks to run
+     *
+     * @var array<string, Task> $tasks
      */
-    public array $tasks = [];
+    public array $tasks = array();
 
     /**
-     * Handle to task mapping.
+     * Handle to task mapping
+     *
+     * @var array<string, string> $handles
      */
-    public array $handles = [];
+    public array $handles = array();
 
     /**
-     * Callback registered for set.
+     * Callback registered for set
+     *
+     * @var callable|null $callback
      */
-    protected mixed $callback;
+    protected $callback = null;
 
     /**
-     * Constructor.
+     * Constructor
      *
      * @param array $tasks Array of tasks to run
      *
-     * @see Moonspot\Gearman\Task
+     * @return void
+     * @see Task
      */
-    public function __construct(array $tasks = []) {
+    public function __construct(array $tasks = array())
+    {
         foreach ($tasks as $task) {
             $this->addTask($task);
         }
     }
 
     /**
-     * Add a task to the set.
+     * Add a task to the set
      *
-     * @param Task $task Task to add to the set
+     * @param object $task Task to add to the set
      *
-     * @see Moonspot\Gearman\Task, Moonspot\Gearman\Set::$tasks
+     * @return void
+     * @see Task, Set::$tasks
      */
-    public function addTask(Task $task): void {
+    public function addTask(Task $task): void
+    {
         if (!isset($this->tasks[$task->uniq])) {
             $this->tasks[$task->uniq] = $task;
-            ++$this->tasksCount;
+            $this->tasksCount++;
         }
     }
 
     /**
-     * Get a task.
+     * Get a task
      *
      * @param string $handle Handle of task to get
      *
-     * @return Task Instance of task
-     *
-     * @throws Moonspot\Gearman\Exception
+     * @return object Instance of task
+     * @throws Exception
      */
-    public function getTask(string $handle): Task {
+    public function getTask(string $handle): Task
+    {
         if (!isset($this->handles[$handle])) {
-            throw new \Exception('Unknown handle');
+            throw new Exception('Unknown handle');
         }
 
         if (!isset($this->tasks[$this->handles[$handle]])) {
-            throw new \Exception('No task by that handle');
+            throw new Exception('No task by that handle');
         }
 
         return $this->tasks[$this->handles[$handle]];
@@ -144,9 +164,12 @@ class Set implements \IteratorAggregate, \Countable {
      * This function will return true if all of the tasks in the set have
      * finished running. If they have we also run the set callbacks if there
      * is one.
+     *
+     * @return boolean
      */
-    public function finished(): bool {
-        if (0 == $this->tasksCount) {
+    public function finished(): bool
+    {
+        if ($this->tasksCount == 0) {
             if (isset($this->callback)) {
                 foreach ($this->tasks as $task) {
                     $results[] = $task->result;
@@ -162,13 +185,15 @@ class Set implements \IteratorAggregate, \Countable {
     }
 
     /**
-     * Attach a callback to this set.
+     * Attach a callback to this set
      *
-     * @param callable $callback A valid PHP callback
+     * @param callback $callback A valid PHP callback
      *
-     * @throws Moonspot\Gearman\Exception
+     * @return void
+     * @throws Exception
      */
-    public function attachCallback(callable $callback): void {
+    public function attachCallback(callable $callback): void
+    {
         if (!is_callable($callback)) {
             throw new Exception('Invalid callback specified');
         }
@@ -177,20 +202,24 @@ class Set implements \IteratorAggregate, \Countable {
     }
 
     /**
-     * Get the iterator.
+     * Get the iterator
      *
      * @return ArrayIterator Tasks
      */
-    public function getIterator(): \ArrayIterator {
-        return new \ArrayIterator($this->tasks);
+    public function getIterator(): Traversable
+    {
+        return new ArrayIterator($this->tasks);
     }
 
     /**
-     * Get the task count.
+     * Get the task count
      *
      * @return int Number of tasks in the set
+     * @see    {@link Countable::count()}
      */
-    public function count(): int {
+    #[\ReturnTypeWillChange]
+    public function count(): int
+    {
         return $this->tasksCount;
     }
 }

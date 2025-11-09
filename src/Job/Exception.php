@@ -2,10 +2,12 @@
 
 namespace Moonspot\Gearman\Job;
 
+use Moonspot\Gearman\Exception as GearmanException;
+
 /**
- * Interface for Danga's Gearman job scheduling system.
+ * Interface for Danga's Gearman job scheduling system
  *
- * PHP version 8.1+
+ * PHP version 5.1.0+
  *
  * LICENSE: This source file is subject to the New BSD license that is
  * available through the world-wide-web at the following URI:
@@ -14,35 +16,30 @@ namespace Moonspot\Gearman\Job;
  * please send a note to license@php.net so we can mail you a copy immediately.
  *
  * @category  Net
- *
+ * @package   Moonspot\Gearman\Job
  * @author    Joe Stump <joe@joestump.net>
- * @author    Brian Moon <brianm@dealnews.com>
  * @copyright 2007-2008 Digg.com, Inc.
  * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
- *
  * @version   CVS: $Id$
- *
- * @see      http://pear.php.net/package/Net_Gearman
- * @see      http://www.danga.com/gearman/
+ * @link      https://github.com/brianlmoon/gearman
+ * @link      http://www.danga.com/gearman/
  */
 
 /**
- * Exception class for Gearman jobs.
+ * Exception class for Gearman jobs
  *
  * Your Gearman jobs should throw this from their run() method if they run
  * into any kind of error.
  *
  * @category  Net
- *
+ * @package   Moonspot\Gearman\Job
  * @author    Joe Stump <joe@joestump.net>
- * @author    Brian Moon <brianm@dealnews.com>
  * @copyright 2007-2008 Digg.com, Inc.
  * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
- *
  * @version   Release: @package_version@
- *
- * @see      http://www.danga.com/gearman/
- * @see       Moonspot\Gearman\Job\Common, Moonspot\Gearman\Worker
+ * @link      http://www.danga.com/gearman/
+ * @see       \Moonspot\Gearman\Job\Common, \Moonspot\Gearman\Worker
  */
-class Exception extends \Moonspot\Gearman\Exception {
+class Exception extends GearmanException
+{
 }
