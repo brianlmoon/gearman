@@ -1,4 +1,4 @@
-name: Testing brianlmoon/net_gearman
+name: Testing brianlmoon/gearman
 
 on: [push, pull_request]
 
@@ -13,7 +13,7 @@ jobs:
         include:
           - operating-system: 'ubuntu-latest'
             php-versions: '8.1'
-            phpunit-versions: 9
+            phpunit-versions: 10
     steps:
 
     - name: Checkout
@@ -29,5 +29,5 @@ jobs:
       uses: php-actions/phpunit@v4
       with:
         php_extensions: "sockets pcov"
-        version: "9.6"
+        version: "10.5"
         php_version: ${{ matrix.php-versions }}
