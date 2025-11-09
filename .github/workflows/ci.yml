@@ -1,6 +1,6 @@
 name: Testing brianlmoon/gearman
 
-on: [push, pull_request]
+on: [push]
 
 jobs:
   test:
