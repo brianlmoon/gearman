@@ -9,7 +9,7 @@ of function calls, or to call functions between languages.
 ## Installation
 
 ```
-$ composer require brianlmoon/gearman
+$ composer require moonspot/gearman
 ```
 
 ## Examples

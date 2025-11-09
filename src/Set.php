@@ -25,7 +25,7 @@ use Traversable;
  * @copyright 2007-2008 Digg.com, Inc.
  * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
  * @version   CVS: $Id$
- * @link      https://github.com/brianlmoon/gearman-client
+ * @link      https://github.com/brianlmoon/gearman
  */
 
 /**
@@ -73,7 +73,7 @@ use Traversable;
  * @author    Brian Moon <brianm@dealnews.com>
  * @copyright 2007-2008 Digg.com, Inc.
  * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
- * @link      https://github.com/brianlmoon/gearman-client
+ * @link      https://github.com/brianlmoon/gearman
  * @see       Job\Common, Worker
  */
 class Set implements IteratorAggregate, Countable

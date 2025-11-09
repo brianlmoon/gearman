@@ -23,7 +23,7 @@ use Moonspot\Gearman\Job\Exception;
  * @copyright 2007-2008 Digg.com, Inc.
  * @license   http://www.opensource.org/licenses/bsd-license.php New BSD License
  * @version   CVS: $Id$
- * @link      https://github.com/brianlmoon/gearman-client
+ * @link      https://github.com/brianlmoon/gearman
  */
 
 // Define this if you want your Jobs to be stored in a different
@@ -45,7 +45,7 @@ if (!defined('NET_GEARMAN_JOB_CLASS_PREFIX')) {
  * @author    Joe Stump <joe@joestump.net>
  * @author    Brian Moon <brianm@dealnews.com>
  * @copyright 2007-2008 Digg.com, Inc.
- * @link      https://github.com/brianlmoon/gearman-client
+ * @link      https://github.com/brianlmoon/gearman
  */
 abstract class Job
 {

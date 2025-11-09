@@ -1,5 +1,5 @@
 {
-  "name": "brianlmoon/gearman",
+  "name": "moonspot/gearman",
   "homepage": "http://brian.moonspot.net/GearmanManager",
   "description": "PHP library for interfacing with Gearmand",
   "keywords": [
